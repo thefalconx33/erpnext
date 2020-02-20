@@ -23,8 +23,12 @@ def update_last_purchase_rate(doc, is_submit):
 		# compare last purchase date and this transaction's date
 		last_purchase_rate = None
 		if last_purchase_details and \
-				(last_purchase_details.purchase_date > this_purchase_date):
+				(last_purchase_details.purchase_date >= this_purchase_date):
 			last_purchase_rate = last_purchase_details['base_net_rate']
+		elif is_submit == 0 and last_purchase_details:
+			# if latest purchase document is being cancelled 
+			# then `this_purchase_date` will be greater
+			last_purchase_rate = last_purchase_details['base_net_rate's]
 		elif is_submit == 1:
 			# even if this transaction is the latest one, it should be submitted
 			# for it to be considered for latest purchase rate
