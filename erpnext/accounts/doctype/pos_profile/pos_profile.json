@@ -221,7 +221,8 @@
    "fieldname": "account_for_change_amount",
    "fieldtype": "Link",
    "label": "Account for Change Amount",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_23",
@@ -320,7 +321,7 @@
  "idx": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-10-29 13:18:38.795925",
+ "modified": "2020-11-18 14:42:00.718876",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Profile",

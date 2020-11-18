@@ -367,6 +367,7 @@ erpnext.PointOfSale.Controller = class {
 					this.frm.savesubmit()
 						.then((r) => {
 							this.toggle_components(false);
+							this.cart.$add_discount_elem.html(`+ Add Discount`);
 							this.order_summary.toggle_component(true);
 							this.order_summary.load_summary_of(this.frm.doc, true);
 							frappe.show_alert({
@@ -413,6 +414,7 @@ erpnext.PointOfSale.Controller = class {
 					this.recent_order_list.toggle_component(false);
 					frappe.run_serially([
 						() => this.frm.refresh(name),
+						() => this.reset_payments(),
 						() => this.cart.load_invoice(),
 						() => this.item_selector.toggle_component(true)
 					]);
@@ -429,7 +431,14 @@ erpnext.PointOfSale.Controller = class {
 		})
 	}
 
-	
+	reset_payments() {
+		return frappe.run_serially([
+			() => this.frm.set_value('payments', []),
+			() => this.frm.set_value('paid_amount', 0),
+			() => this.frm.set_value('change_amount', 0),
+			() => this.frm.call('set_missing_values')
+		]);
+	}
 
 	toggle_recent_order_list(show) {
 		this.toggle_components(!show);
