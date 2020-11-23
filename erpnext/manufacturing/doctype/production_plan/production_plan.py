@@ -319,7 +319,7 @@ class ProductionPlan(Document):
 		frappe.flags.mute_messages = False
 
 		if wo_list:
-			wo_list = ["""<a href="#Form/Work Order/%s" target="_blank">%s</a>""" % \
+			wo_list = ["""<a href="/app/Form/Work Order/%s" target="_blank">%s</a>""" % \
 				(p, p) for p in wo_list]
 			msgprint(_("{0} created").format(comma_and(wo_list)))
 		else :
@@ -423,7 +423,7 @@ class ProductionPlan(Document):
 		frappe.flags.mute_messages = False
 
 		if material_request_list:
-			material_request_list = ["""<a href="#Form/Material Request/{0}">{1}</a>""".format(m.name, m.name) \
+			material_request_list = ["""<a href="/app/Form/Material Request/{0}">{1}</a>""".format(m.name, m.name) \
 				for m in material_request_list]
 			msgprint(_("{0} created").format(comma_and(material_request_list)))
 		else :
@@ -571,6 +571,8 @@ def get_sales_orders(self):
 		so_filter += " and so.customer = %(customer)s"
 	if self.project:
 		so_filter += " and so.project = %(project)s"
+	if self.sales_order_status:
+		so_filter += "and so.status = %(sales_order_status)s"
 
 	if self.item_code:
 		item_filter += " and so_item.item_code = %(item)s"
@@ -594,8 +596,8 @@ def get_sales_orders(self):
 			"customer": self.customer,
 			"project": self.project,
 			"item": self.item_code,
-			"company": self.company
-
+			"company": self.company,
+			"sales_order_status": self.sales_order_status
 		}, as_dict=1)
 	return open_so
 
