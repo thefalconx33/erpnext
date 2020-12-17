@@ -78,7 +78,10 @@ def get_fiscal_years(transaction_date=None, fiscal_year=None, label="Date", verb
 			else:
 				return ((fy.name, fy.year_start_date, fy.year_end_date),)
 
-	error_msg = _("""{0} {1} not in any active Fiscal Year.""").format(label, formatdate(transaction_date))
+	error_msg = _("""{0} {1} is not in any active Fiscal Year""").format(label, formatdate(transaction_date))
+	if company:
+		error_msg = _("""{0} for {1}""").format(error_msg, frappe.bold(company))
+	
 	if verbose==1: frappe.msgprint(error_msg)
 	raise FiscalYearError(error_msg)
 
@@ -796,7 +799,7 @@ def get_children(doctype, parent, company, is_root=False):
 
 	return acc
 
-def create_payment_gateway_account(gateway):
+def create_payment_gateway_account(gateway, payment_channel="Email"):
 	from erpnext.setup.setup_wizard.operations.company_setup import create_bank_account
 
 	company = frappe.db.get_value("Global Defaults", None, "default_company")
@@ -831,7 +834,8 @@ def create_payment_gateway_account(gateway):
 			"is_default": 1,
 			"payment_gateway": gateway,
 			"payment_account": bank_account.name,
-			"currency": bank_account.account_currency
+			"currency": bank_account.account_currency,
+			"payment_channel": payment_channel
 		}).insert(ignore_permissions=True)
 
 	except frappe.DuplicateEntryError:
