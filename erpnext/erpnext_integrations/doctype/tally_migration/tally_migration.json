@@ -7,40 +7,34 @@
  "engine": "InnoDB",
  "field_order": [
   "status",
+  "master_data_section",
   "master_data",
   "is_master_data_processed",
   "is_master_data_imported",
+  "default_uom",
   "column_break_2",
   "tally_creditors_account",
   "tally_debtors_account",
-  "company_section",
-  "tally_company",
-  "default_uom",
-  "column_break_8",
   "erpnext_company",
-  "processed_files_section",
-  "chart_of_accounts",
-  "parties",
-  "addresses",
-  "column_break_17",
-  "uoms",
-  "items",
-  "vouchers",
-  "accounts_section",
-  "default_warehouse",
-  "default_round_off_account",
-  "column_break_21",
-  "default_cost_center",
   "day_book_section",
   "day_book_data",
-  "column_break_27",
   "is_day_book_data_processed",
   "is_day_book_data_imported",
-  "import_log_section",
-  "failed_import_log",
-  "fixed_errors_log",
-  "failed_import_preview",
-  "fixed_error_log_preview"
+  "default_round_off_account",
+  "column_break_21",
+  "trial_balance_report",
+  "default_warehouse",
+  "default_cost_center",
+  "error_log_section",
+  "hide_resolved_errors",
+  "error_log_html",
+  "chart_of_accounts",
+  "masters",
+  "vouchers",
+  "skipped_docs",
+  "is_chart_of_accounts_imported",
+  "is_opening_balances_imported",
+  "error_log"
  ],
  "fields": [
   {
@@ -79,79 +73,11 @@
    "reqd": 1
   },
   {
-   "depends_on": "is_master_data_processed",
-   "fieldname": "company_section",
-   "fieldtype": "Section Break"
-  },
-  {
-   "description": "Company Name as per Imported Tally Data",
-   "fieldname": "tally_company",
-   "fieldtype": "Data",
-   "label": "Tally Company",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_8",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Your Company set in ERPNext",
-   "fieldname": "erpnext_company",
-   "fieldtype": "Data",
-   "label": "ERPNext Company",
-   "read_only_depends_on": "eval:doc.is_master_data_processed==1"
-  },
-  {
-   "fieldname": "processed_files_section",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Processed Files"
-  },
-  {
-   "fieldname": "chart_of_accounts",
-   "fieldtype": "Attach",
-   "label": "Chart of Accounts"
-  },
-  {
-   "fieldname": "parties",
-   "fieldtype": "Attach",
-   "label": "Parties"
-  },
-  {
-   "fieldname": "addresses",
-   "fieldtype": "Attach",
-   "label": "Addresses"
-  },
-  {
-   "fieldname": "column_break_17",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "uoms",
-   "fieldtype": "Attach",
-   "label": "UOMs"
-  },
-  {
-   "fieldname": "items",
-   "fieldtype": "Attach",
-   "label": "Items"
-  },
-  {
-   "fieldname": "vouchers",
-   "fieldtype": "Attach",
-   "label": "Vouchers"
-  },
-  {
-   "depends_on": "is_master_data_imported",
-   "description": "The accounts are set by the system automatically but do confirm these defaults",
-   "fieldname": "accounts_section",
-   "fieldtype": "Section Break",
-   "label": "Accounts"
-  },
-  {
+   "depends_on": "eval:doc.is_day_book_data_processed != 1",
    "fieldname": "default_warehouse",
    "fieldtype": "Link",
    "label": "Default Warehouse",
+   "mandatory_depends_on": "eval:doc.is_master_data_imported === 1",
    "options": "Warehouse"
   },
   {
@@ -159,9 +85,11 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.is_day_book_data_processed != 1",
    "fieldname": "default_cost_center",
    "fieldtype": "Link",
    "label": "Default Cost Center",
+   "mandatory_depends_on": "eval:doc.is_master_data_imported === 1",
    "options": "Cost Center"
   },
   {
@@ -193,16 +121,12 @@
    "read_only": 1
   },
   {
-   "depends_on": "is_master_data_imported",
+   "depends_on": "eval:doc.is_master_data_imported",
    "fieldname": "day_book_section",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "column_break_27",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Day Book Data exported from Tally that consists of all historic transactions",
+   "description": "Consists of transactions happened after date of migration",
    "fieldname": "day_book_data",
    "fieldtype": "Attach",
    "in_list_view": 1,
@@ -215,46 +139,110 @@
    "fieldtype": "Link",
    "label": "Default UOM",
    "options": "UOM",
-   "read_only_depends_on": "eval:doc.is_master_data_imported==1"
+   "read_only_depends_on": "eval:doc.is_master_data_processed==1"
   },
   {
-   "default": "[]",
-   "fieldname": "failed_import_log",
-   "fieldtype": "Code",
-   "hidden": 1,
-   "options": "JSON"
-  },
-  {
-   "fieldname": "failed_import_preview",
-   "fieldtype": "HTML",
-   "label": "Failed Import Log"
-  },
-  {
-   "fieldname": "import_log_section",
-   "fieldtype": "Section Break",
-   "label": "Import Log"
-  },
-  {
+   "depends_on": "eval:doc.is_day_book_data_processed != 1",
    "fieldname": "default_round_off_account",
    "fieldtype": "Link",
    "label": "Default Round Off Account",
+   "mandatory_depends_on": "eval:doc.is_master_data_imported === 1",
    "options": "Account"
   },
   {
-   "default": "[]",
-   "fieldname": "fixed_errors_log",
-   "fieldtype": "Code",
-   "hidden": 1,
-   "options": "JSON"
+   "description": "Data will be imported to this Company",
+   "fieldname": "erpnext_company",
+   "fieldtype": "Link",
+   "label": "ERPNext Company",
+   "options": "Company",
+   "read_only_depends_on": "eval:doc.is_master_data_processed==1",
+   "reqd": 1
   },
   {
-   "fieldname": "fixed_error_log_preview",
-   "fieldtype": "HTML",
-   "label": "Fixed Error Log"
+   "fieldname": "chart_of_accounts",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "masters",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_chart_of_accounts_imported",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "[]",
+   "fieldname": "error_log",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:doc.error_log != \"[]\"",
+   "depends_on": "eval:(doc.error_log != \"[]\")",
+   "fieldname": "error_log_section",
+   "fieldtype": "Section Break",
+   "label": "Error Log"
+  },
+  {
+   "fieldname": "error_log_html",
+   "fieldtype": "HTML"
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_resolved_errors",
+   "fieldtype": "Check",
+   "label": "Hide Resolved Errors"
+  },
+  {
+   "description": "Consists of closing balance of all ledgers until date of migration",
+   "fieldname": "trial_balance_report",
+   "fieldtype": "Attach",
+   "label": "Trial Balance Report"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_opening_balances_imported",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "vouchers",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:!doc.is_master_data_imported",
+   "fieldname": "master_data_section",
+   "fieldtype": "Section Break",
+   "label": "Master Data Import"
+  },
+  {
+   "fieldname": "skipped_docs",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "read_only": 1
   }
  ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-04-28 00:29:18.039826",
+ "modified": "2020-12-08 11:43:48.370945",
  "modified_by": "Administrator",
  "module": "ERPNext Integrations",
  "name": "Tally Migration",
