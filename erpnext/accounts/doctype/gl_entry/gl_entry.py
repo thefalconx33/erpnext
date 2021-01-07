@@ -31,7 +31,7 @@ class GLEntry(Document):
 		self.validate_cost_center()
 
 		if not self.flags.from_repost:
-			self.check_pl_account()
+			# self.check_pl_account()
 			self.validate_party()
 			self.validate_currency()
 

@@ -239,8 +239,8 @@ class TallyMigration(Document):
 
 			customers, suppliers, addresses = [], [], []
 			for account in collection.find_all("LEDGER"):
-				party, party_type, links = None, None, []
-				party = account.NAME.string.strip()
+				party_type, links = None, None, []
+				party = account.NAME.string.strip().strip('\n')
 
 				if party in customer_ledgers:
 					party_type = "Customer"
@@ -423,6 +423,8 @@ class TallyMigration(Document):
 					account["account"] = party_account
 					account["party"] = entry.LEDGERNAME.string.strip()
 			
+			if not entry.AMOUNT: continue
+
 			amount = entry.AMOUNT.string.strip()
 			if '@' in amount:
 				# eg. "-JPY363953.00 @ ₹ 0.6931/JPY = -₹ 252255.82"
@@ -501,8 +503,8 @@ class TallyMigration(Document):
 				"qty": qty.strip(),
 				"uom": uom.strip().title(),
 				"conversion_factor": 1,
-				"rate": entry.RATE.string.strip().split("/")[0],
-				"price_list_rate": entry.RATE.string.strip().split("/")[0],
+				"rate": entry.RATE.string.strip().split("/")[0] if entry.RATE else 0,
+				"price_list_rate": entry.RATE.string.strip().split("/")[0] if entry.RATE else 0,
 				"cost_center": self.default_cost_center,
 				"warehouse": self.default_warehouse,
 				account_field: encode_company_abbr(entry.find_all("ACCOUNTINGALLOCATIONS.LIST")[0].LEDGERNAME.string.strip(), self.erpnext_company),
